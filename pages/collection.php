@@ -1,3 +1,17 @@
+<?php
+// require '../services.php';
+
+session_start();
+
+$username = $_SESSION["username"];
+echo 'User '.$username;
+if (isset($username)) {
+    // 
+} else {
+    header("Location: form_login.php");
+}
+?>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -20,8 +34,8 @@
                 <div class="buttons">
                     <!-- <button class="btn-login">Se connecter</button>
                     ↔ -->
-                    <button class="btn-register"> 
-                        Deconnexion</button>
+                    <a href="../logout.php"><button class="btn-register"> 
+                        Deconnexion</button></a>
                 </div>
             </div>
             <div class="header">

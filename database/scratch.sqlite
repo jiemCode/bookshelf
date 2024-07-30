@@ -1,0 +1,32 @@
+-- Insérer des utilisateurs
+INSERT INTO Utilisateurs (nom, email, motDePasse) VALUES
+('Jean Dupont', 'jean.dupont@example.com', 'password123'),
+('Marie Curie', 'marie.curie@example.com', 'radium456'),
+('Albert Einstein', 'albert.einstein@example.com', 'relativity789');
+
+-- Insérer des collections
+INSERT INTO Collections (id_utilisateurs) VALUES
+((SELECT id FROM Utilisateurs WHERE nom = 'Jean Dupont')),
+((SELECT id FROM Utilisateurs WHERE nom = 'Marie Curie')),
+((SELECT id FROM Utilisateurs WHERE nom = 'Albert Einstein'));
+
+-- Insérer des livres
+INSERT INTO Livres (titre, auteur, annee, status, genre) VALUES
+('Les Misérables', 'Victor Hugo', 1862, 'disponible', 'roman'),
+('Cyrano de Bergerac', 'Edmond Rostand', 1897, 'disponible', 'theatre'),
+('Le Petit Prince', 'Antoine de Saint-Exupéry', 1943, 'disponible', 'roman'),
+('La Peste', 'Albert Camus', 1947, 'disponible', 'roman'),
+('L Étranger', 'Albert Camus', 1942, 'disponible', 'roman');
+
+-- Associer des livres aux collections
+INSERT INTO CollectionLivres (id_collection, id_livre) VALUES
+((SELECT id FROM Collections WHERE id_utilisateurs = (SELECT id FROM Utilisateurs WHERE nom = 'Jean Dupont')), 1),
+((SELECT id FROM Collections WHERE id_utilisateurs = (SELECT id FROM Utilisateurs WHERE nom = 'Jean Dupont')), 2),
+((SELECT id FROM Collections WHERE id_utilisateurs = (SELECT id FROM Utilisateurs WHERE nom = 'Marie Curie')), 3),
+((SELECT id FROM Collections WHERE id_utilisateurs = (SELECT id FROM Utilisateurs WHERE nom = 'Marie Curie')), 4),
+((SELECT id FROM Collections WHERE id_utilisateurs = (SELECT id FROM Utilisateurs WHERE nom = 'Albert Einstein')), 5);
+
+-- Insérer des prêts
+INSERT INTO Prets (id_utilisateur, id_livre, nom) VALUES
+((SELECT id FROM Utilisateurs WHERE nom = 'Jean Dupont'), 1, 'Jean Dupont'),
+((SELECT id FROM Utilisateurs WHERE nom = 'Marie Curie'), 3, 'Marie Curie');
