@@ -12,6 +12,8 @@ function authentifier($login, $password) {
         // 
         session_start();
         $_SESSION['username'] = $login;
+        $_SESSION['user_id'] = getUserId($login);
+        $_SESSION['collection_id'] = getCollectionId($_SESSION['user_id']);
         header('Location: pages/collection.php?username='.$login);
         
     } else {

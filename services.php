@@ -1,9 +1,6 @@
 <?php
 
-$DB = 'sqlite:database/development.db';
-
-$pdo = new PDO($DB);
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$DB = 'sqlite:./database/development.db';
 
 function opendatabase(){
     global $pdo;
@@ -43,6 +40,38 @@ function isValidUser($username) {
     }
 }
 
+
+function getUserId($username) {
+    try {
+        $pdo = opendatabase();
+
+        $stmt = $pdo->prepare("SELECT id FROM Utilisateurs WHERE Utilisateurs.nom = ?");
+        $stmt->execute([$username]);
+        $user_id = $stmt->fetchColumn();
+        
+
+        return $user_id;
+        
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
+}
+
+function getCollectionId($user_id) {
+    try {
+        $pdo = opendatabase();
+
+        $stmt = $pdo->prepare("SELECT id FROM Collections WHERE id_utilisateurs = ?");
+        $stmt->execute([$user_id]);
+        $collection_id = $stmt->fetchColumn();
+        
+
+        return $collection_id;
+        
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
+}
 
 function getPassword($username) {
     

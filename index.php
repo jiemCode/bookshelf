@@ -30,7 +30,7 @@
             <div class="header">
                 <span id="logo">BookShelf</span>
                 <div class="action-buttons-bar">
-                    <a href="pages/collection.html">
+                    <a href="pages/collection.php">
                         <button> <div> +</div>Créer une collection</button>
                     </a>
                 </div>
