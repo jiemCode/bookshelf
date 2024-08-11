@@ -59,7 +59,7 @@ if (isset($username)) {
             
             <main id="content">
                 
-                <form action="../addBook.hp" method="post" class="add-book">
+                <form action="../addBook.php" method="post" class="add-book">
                     <div class="form-add-book">
 
                         <div class="book-img">

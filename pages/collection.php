@@ -23,7 +23,7 @@ if (!isset($username)) {
     </head>
     <body>
 
-        <!-- <div id="myPopup" class="popup">
+        <div id="myPopup" class="popup">
             <div class="popup-content">
                 <h2>Ajouter un livre</h2>
                 <form action="../addBook.php" method="post">
@@ -63,7 +63,7 @@ if (!isset($username)) {
                     </div>
                 </form>
             </div>
-        </div> -->
+        </div> 
 
         
         <div class="container">
@@ -85,7 +85,7 @@ if (!isset($username)) {
                 <div class="action-buttons-bar">
                     <!-- <a href="form_addBook.php"> -->
                     <a href="form_addBook.php">
-                        <button id="myButtons"> <span class="action-buttons-icon"> 📝</span> <span class="action-buttons-text">Ajouter un livre </span></button>
+                        <button> <span class="action-buttons-icon"> 📝</span> <span class="action-buttons-text">Ajouter un livre </span></button>
                     </a>
                     <a href="search.php">
                         <button> <span class="action-buttons-icon"> 🔍</span> <span class="action-buttons-text">Rechercher un livre </span></button>
@@ -94,119 +94,60 @@ if (!isset($username)) {
                         <button> <span class="action-buttons-icon"> ↗️</span> <span class="action-buttons-text">Preter un livre </span></button>
                     </a>
                 </div>
-                <div class="page-title">
-                    <h3>Ma collection </h3>
-                    <small> - 27 oeuvres</small>
-                </div>
             </div>
-            
-            
 
-            <main id="content-void">
+            <?php
+            $user_collection = getLivresUtilisateur($_SESSION['user_id']);
+            $_count = count($user_collection);
+
+            if ($_count == 0) {
+            
+            ?>
+
+            <main id="">
                 <img src="../static/image/illustration.jpg" alt="bookshef-image">
                 <h1>Votre collection est vide 🙄. Commencer par <span>ajouter un livre</span></h1>
             </main>
+                
+            <?php
+
+            } else {
+
+            ?>
+
             <main id="content">
-
-            <?php
-            foreach (getLivresUtilisateur($_SESSION['user_id']) as $key => $item) {
-            ?>
-
-                <div class="item">
-                    <div class="img-frame">
-                        <img class="item-img" src="../static/image/illustration.jpg" alt="bookshef-image">
-                    </div>
-                    <div class="item-bottom">
-                        <span class="item-title">
-                            <?php echo $item["titre"] ?>
-                        </span>
-                        <span class="item-author">
-                            <?php echo $item["auteur"] ?>
-                        </span>
-                    </div>
-                </div>
-
-            <?php
-            }
-            ?>
                 
+                <?php
+                foreach ($user_collection as $key => $item) {
+                ?>
 
-                <div class="item">
-                    <div class="img-frame">
-                        <img class="item-img" src="../static/image/illustration.jpg" alt="bookshef-image">
+                <a href="book_details.php?book=<?php echo $item["id"];?> ">
+                    <div class="item">
+                        <div class="img-frame">
+                            <img class="item-img" src="../static/image/illustration.jpg" alt="bookshef-image">
+                        </div>
+                        <div class="item-bottom">
+                            <span class="item-title">
+                                <?php echo $item["titre"] ?>
+                            </span>
+                            <span class="item-author">
+                                <?php echo $item["auteur"] ?>
+                            </span>
+                        </div>
                     </div>
-                    <div class="item-bottom">
-                        <span class="item-title">
-                            Les misérables
-                        </span>
-                        <span class="item-author">
-                            Victor Hugo
-                        </span>
-                    </div>
-                </div>
-                
-                
-                <div class="item">
-                    <div class="img-frame">
-                        <img class="item-img" src="../static/image/illustration.jpg" alt="bookshef-image">
-                    </div>
-                    <div class="item-bottom">
-                        <span class="item-title">
-                            Les misérables
-                        </span>
-                        <span class="item-author">
-                            Victor Hugo
-                        </span>
-                    </div>
-                </div>
+                </a>
 
-
-                <div class="item">
-                    <div class="img-frame">
-                        <img class="item-img" src="../static/image/illustration.jpg" alt="bookshef-image">
-                    </div>
-                    <div class="item-bottom">
-                        <span class="item-title">
-                            Les misérables
-                        </span>
-                        <span class="item-author">
-                            Victor Hugo
-                        </span>
-                    </div>
-                </div>
-
-                <div class="item">
-                    <!-- <img class="item-img" src="../static/image/illustration.jpg" alt="bookshef-image"> -->
-                    <div class="img-frame">
-                        <!-- <img alt="crypto" src="https://source.unsplash.com/random/?Cryptocurrency&1"> -->
-                    </div>
-                    <div class="item-bottom">
-                        <span class="item-title">
-                            Les misérables esd rtfgyuhijok
-                        </span>
-                        <span class="item-author">
-                            Victor Hugo
-                        </span>
-                    </div>
-                </div>
-
-
-                <div class="item">
-                    <div class="img-frame">
-                        <img class="item-img" src="../static/image/illustration.jpg" alt="bookshef-image">
-                    </div>
-                    <div class="item-bottom">
-                        <span class="item-title">
-                            Les misérables
-                        </span>
-                        <span class="item-author">
-                            Victor Hugo
-                        </span>
-                    </div>
-                </div>
+                <?php
+                }
+                ?>
 
 
             </main>
+
+            <?php
+            }
+            ?>            
+            
         </div>
 
         <script src="/static/js/script.js" async defer></script>

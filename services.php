@@ -124,7 +124,7 @@ function insererUtilisateur($nom, $email, $motDePasse) {
 }
 
 
-function insererLivre($titre, $auteur, $annee, $status, $genre) {
+function insererLivre($titre, $auteur, $annee, $status, $genre, $collection_id) {
     
     
     try {
@@ -132,10 +132,18 @@ function insererLivre($titre, $auteur, $annee, $status, $genre) {
         // $pdo = new PDO($DB);
         // $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+        $pdo->beginTransaction();
+
         $stmt = $pdo->prepare("INSERT INTO Livres (titre, auteur, annee, status, genre) VALUES (?, ?, ?, ?, ?)");
         $stmt->execute([$titre, $auteur, $annee, $status, $genre]);
 
-        return $pdo->lastInsertId(); // Retourner l'ID du livre inséré
+        $livre_id = $pdo->lastInsertId(); // Retourner l'ID du livre inséré
+
+        $stmt = $pdo->prepare("INSERT INTO CollectionLivres (id_collection, id_livre) VALUES (?, ?)");
+        $stmt->execute([$collection_id, $livre_id]);
+
+        $pdo->commit();
+
     } catch (PDOException $e) {
         echo "Error: " . $e->getMessage();
     }

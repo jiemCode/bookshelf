@@ -2,9 +2,11 @@
 
 require "services.php";
 
+session_start();
 
-function addBook($titre, $author, $year, $genre) {
-    insererLivre(titre: $titre, auteur: $author, annee: $year, genre: $genre, status: "disponible");
+
+function addBook($titre, $author, $year, $genre, $collection_id) {
+    insererLivre(titre: $titre, auteur: $author, annee: $year, genre: $genre, status: "disponible", collection_id: $collection_id);
 }
 
 if (isset($_POST["title"]) && isset($_POST["author"]) && isset($_POST["year"]) && isset($_POST["genre"])) {
@@ -12,9 +14,10 @@ if (isset($_POST["title"]) && isset($_POST["author"]) && isset($_POST["year"]) &
     $author = $_POST["author"];
     $year = $_POST["year"];
     $genre = $_POST["genre"];
-    echo $genre;
+    $collection_id = $_SESSION["collection_id"];
     
-    // addBook($title, $author, $year, $genre);
-    header("Location : pages/collection.php?genre=".$genre);
+    addBook($title, $author, $year, $genre, $collection_id);
+    echo 'Collection Id: '.$collection_id;
+    header("Location: pages/collection.php");
 }
  

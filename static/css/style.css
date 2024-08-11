@@ -21,10 +21,6 @@ button:focus {
     outline: none;
 }
 
-#content-void {
-    display: none;
-}
-
 .container {
     margin: .5rem;
     display: flex;
@@ -219,7 +215,7 @@ footer {
     }
 }
 
-#content > .item {
+#content > a > .item {
     display: flex;
     flex-direction: column;
     border: 2px solid var(--primary);
@@ -228,12 +224,12 @@ footer {
     background-color: var(--wheat);
 }
 
-#content > .item:hover {
+#content > a > .item:hover {
     cursor: pointer;
     transform: scale(1.05);
 }
 
-#content > .item > .img-frame{
+#content > a > .item > .img-frame{
     width: 300px;
     height: 260px;
     border-radius: 1rem 1rem 0 0;
@@ -242,7 +238,7 @@ footer {
     background-clip: content-box;
 }
 
-#content > .item > .img-frame > .item-img {
+#content > a > .item > .img-frame > .item-img {
     width: 300px;
     height: 260px;
     border-radius: 1rem 1rem 0 0;
@@ -250,13 +246,13 @@ footer {
     overflow: hidden;
 }
 
-#content > .item > .item-bottom {
+#content > a > .item > .item-bottom {
     display: flex;
     flex-direction: column;
     padding-left: .5rem;
 }
 
-#content > .item > .item-bottom > .item-title {
+#content > a > .item > .item-bottom > .item-title {
     font-size: 1.2rem;
     text-overflow: ellipsis;
     overflow: hidden; 
@@ -265,7 +261,7 @@ footer {
     padding: 1rem 0 1rem;
 }
 
-#content > .item > .item-bottom > .item-author {
+#content > a > .item > .item-bottom > .item-author {
     color: var(--primary);
     text-overflow: ellipsis;
     overflow: hidden; 
@@ -327,6 +323,10 @@ form .form-add-book .book-labels .input-block {
     display: flex;
     flex-direction: column;
     gap: .5rem;
+}
+
+#content-void {
+    display: block;
 }
 
 form .form-add-book .book-labels input,
