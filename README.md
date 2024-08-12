@@ -31,6 +31,8 @@ Les contributions sont les bienvenues ! Si vous souhaitez améliorer le site, ve
 ## Auteurs
 
 - **Maguette DIOP** - [jiemCode](https://github.com/jiemCode)
+- **Badara DIOP** - [PapaBadara](https://github.com/PapaBadara)
+- **Mouhamet THIOUNE**
 
 ## License
 
