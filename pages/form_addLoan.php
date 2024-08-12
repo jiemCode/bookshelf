@@ -58,16 +58,20 @@ echo $livre_id;
                 <span id="logo">
                     <a href="collection.php">BookShelf</a>
                 </span>
-
+                
                 <div class="page-title">
                     <a class="btn-back" href="<?php echo $_SERVER['HTTP_REFERER']; ?>">
                         🢨
                     </a>
-                    <h3>Rechercher du livre</h3>
+                    <h3>Enregistrer un prêt</h3>
                 </div>
             </div>
             
             <main id="content">
+                <?php
+                $user_collection = getPretUtilisateur($_SESSION['user_id']);
+                $_count = count($user_collection);
+                ?>
                 
                 <form action="../upload_file.php?action=<?php echo $action; ?>&livre_id=<?php echo $livre_id; ?>" method="post" class="add-book" enctype="multipart/form-data">
                     <div class="form-add-book">
@@ -88,34 +92,26 @@ echo $livre_id;
                                 <input type="text" name="title" id="" required value="<?php echo isset($livre['titre']) ? $livre['titre'] : ""; ?>">
                             </div>                        
                             <div class="input-block">
-                                <label for="">Auteur</label>
-                                <input type="text" name="author" id="" required value="<?php echo isset($livre['auteur']) ? $livre['auteur'] : ""; ?>">
+                                <label for="">Personne</label>
+                                <input type="text" name="hostname" id="" required value="<?php echo isset($livre['auteur']) ? $livre['auteur'] : ""; ?>">
                             </div>
+                            
                             <div class="input-block">
-                                <label for="">Année</label>
-                                <input type="number" min="1200" name="year" id="" required value="<?php echo isset($livre['annee']) ? $livre['annee'] : ""; ?>">
-                            </div>
-                            <div class="input-block">
-                                <label for="">Genre</label>
-                                <select name="genre" id="" required>
+                                <label for="">Livre</label>
+                                <select name="livre_id" id="" required>
                                 
-                                    <option value=""><?php echo isset($livre['genre']) ? $livre['genre'] : ""; ?></option>
-                                    <option value="">Roman</option>
-                                    <option value="">Essai</option>
-                                    <option value="">Theatre</option>
-                                    <option value="">SF</option>
-                                    <option value="">Autres</option>
+                                    <option value="" selected ><?php echo isset($livre['genre']) ? $livre['genre'] : ""; ?></option>
+                                    
+                                    <?php
+                                    foreach ($user_collection as $key => $item) {
+                                    ?>
+                                    <option value="">
+                                        <?php echo $item["titre"] ;?>
+                                    </option>
+                                    <?php }?>
                                 </select>
                             </div>
-                            <div class="input-block">
-                                <label for="">Statut</label>
-                                <select name="status" id="" required>
-                                
-                                    <option value=""><?php echo isset($livre['status']) ? $livre['status'] : ""; ?></option>
-                                    <option value="">Disponible</option>
-                                    <option value="">Prêté</option>
-                                </select>
-                            </div>
+
                         </div>
                     </div>
                     <div class="add-book-btn">

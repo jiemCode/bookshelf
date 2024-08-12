@@ -9,6 +9,7 @@ echo 'User '.$username;
 if (!isset($username)) {
     header("Location: form_login.php");
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -69,28 +70,31 @@ if (!isset($username)) {
         <div class="container">
             <div class="nav">
                 <nav>
-                    <button class="btn-nav active-page">Acceuil</button>
+                    <button class="btn-nav">
+                        <a href="../index.php">Acceuil</a>
+                    </button>
                     ·
-                    <button class="btn-nav">Contact</button>
+                    <button class="btn-nav">
+                        <a href="contact.php">Contact</a>
+                    </button>
                 </nav>
                 <div class="buttons">
-                    <!-- <button class="btn-login">Se connecter</button>
-                    ↔ -->
                     <a href="../logout.php"><button class="btn-register"> 
                         Deconnexion</button></a>
                 </div>
             </div>
             <div class="header">
-                <span id="logo">BookShelf</span>
+                <span id="logo">
+                    <a href="#">BookShelf</a>
+                </span>
                 <div class="action-buttons-bar">
-                    <!-- <a href="form_addBook.php"> -->
                     <a href="form_addBook.php">
                         <button> <span class="action-buttons-icon"> 📝</span> <span class="action-buttons-text">Ajouter un livre </span></button>
                     </a>
                     <a href="search.php">
                         <button> <span class="action-buttons-icon"> 🔍</span> <span class="action-buttons-text">Rechercher un livre </span></button>
                     </a>
-                    <a href="#">
+                    <a href="form_addLoan.php">
                         <button> <span class="action-buttons-icon"> ↗️</span> <span class="action-buttons-text">Preter un livre </span></button>
                     </a>
                 </div>
@@ -124,7 +128,9 @@ if (!isset($username)) {
                 <a href="book_details.php?book=<?php echo $item["id"];?> ">
                     <div class="item">
                         <div class="img-frame">
-                            <img class="item-img" src="../static/image/illustration.jpg" alt="bookshef-image">
+                            <img class="item-img" src="
+                            <?php echo isset($item['location']) ? $item['location'] : '../static/image/illustration.jpg';?>"
+                            alt="">
                         </div>
                         <div class="item-bottom">
                             <span class="item-title">

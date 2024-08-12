@@ -1,12 +1,14 @@
 <?php
 
-$DB = 'sqlite:./database/development.db';
+define ('SITE_ROOT', realpath(dirname(__FILE__)));
+
+$DB = 'sqlite:database/development_v2.db';
 
 function opendatabase(){
     global $pdo;
     try{
         if($pdo==null){
-          $pdo =new PDO("sqlite:database/development.db","","",array(
+          $pdo =new PDO("sqlite:database/development_v2.db","","",array(
                 PDO::ATTR_PERSISTENT => true
             ));
         }
@@ -124,7 +126,7 @@ function insererUtilisateur($nom, $email, $motDePasse) {
 }
 
 
-function insererLivre($titre, $auteur, $annee, $status, $genre, $collection_id) {
+function insererLivre($titre, $auteur, $annee, $status, $genre, $collection_id, $filename) {
     
     
     try {
@@ -134,16 +136,18 @@ function insererLivre($titre, $auteur, $annee, $status, $genre, $collection_id) 
 
         $pdo->beginTransaction();
 
-        $stmt = $pdo->prepare("INSERT INTO Livres (titre, auteur, annee, status, genre) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$titre, $auteur, $annee, $status, $genre]);
+        $stmt = $pdo->prepare("INSERT INTO Livres (titre, auteur, annee, status, genre, location) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$titre, $auteur, $annee, $status, $genre, $filename]);
+
 
         $livre_id = $pdo->lastInsertId(); // Retourner l'ID du livre inséré
-
+        echo "Last inserted id -> ".$livre_id;
+        
         $stmt = $pdo->prepare("INSERT INTO CollectionLivres (id_collection, id_livre) VALUES (?, ?)");
         $stmt->execute([$collection_id, $livre_id]);
 
         $pdo->commit();
-
+        
     } catch (PDOException $e) {
         echo "Error: " . $e->getMessage();
     }
@@ -218,6 +222,30 @@ function getLivreUtilisateur($idUtilisateur, $idLivre) {
 }
 
 
+function getPretUtilisateur($idUtilisateur) {
+    
+    
+    try {
+        $pdo = opendatabase();
+        // $pdo = new PDO($DB);
+        // $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        $stmt = $pdo->prepare("
+            SELECT Livres.*
+            FROM Livres
+            JOIN CollectionLivres ON Livres.id = CollectionLivres.id_livre
+            JOIN Collections ON CollectionLivres.id_collection = Collections.id
+            WHERE Collections.id_utilisateurs = ? AND Livres.status = 'disponible'
+        ");
+        $stmt->execute([$idUtilisateur]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
+}
+
+
 // modification
 
 
@@ -257,7 +285,7 @@ function modifierUtilisateurMotDePasse($idUtilisateur, $nouveauMotDePasse) {
 }
 
 
-function modifierLivre($idLivre, $nouveauTitre, $nouvelAuteur, $nouvelleAnnee, $nouveauStatus, $nouveauGenre) {
+function modifierLivre($idLivre, $nouveauTitre, $nouvelAuteur, $nouvelleAnnee, $nouveauStatus, $nouveauGenre, $nouvelleLocation) {
     
     
     try {
@@ -265,8 +293,8 @@ function modifierLivre($idLivre, $nouveauTitre, $nouvelAuteur, $nouvelleAnnee, $
         // $pdo = new PDO($DB);
         // $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $stmt = $pdo->prepare("UPDATE Livres SET titre = ?, auteur = ?, annee = ?, status = ?, genre = ? WHERE id = ?");
-        $stmt->execute([$nouveauTitre, $nouvelAuteur, $nouvelleAnnee, $nouveauStatus, $nouveauGenre, $idLivre]);
+        $stmt = $pdo->prepare("UPDATE Livres SET titre = ?, auteur = ?, annee = ?, status = ?, genre = ?, location = ? WHERE id = ?");
+        $stmt->execute([$nouveauTitre, $nouvelAuteur, $nouvelleAnnee, $nouveauStatus, $nouveauGenre, $nouvelleLocation, $idLivre]);
 
         echo "Le livre avec l'ID $idLivre a été mis à jour avec succès.";
     } catch (PDOException $e) {

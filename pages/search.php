@@ -1,104 +1,15 @@
 <?php
-// include "db_conn.php";
 
-// // Définir le nombre de résultats par page
-// $results_per_page = 6; // Ajustez ce nombre selon vos besoins
 
-// // Récupérer le numéro de page actuel depuis la requête GET
-// $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-// $offset = ($page - 1) * $results_per_page;
+require '../services.php';
 
-// // Récupérer les filtres de recherche depuis la requête GET
-// $titre = $_GET['titre'] ?? '';
-// $auteur = $_GET['auteur'] ?? '';
-// $genre = $_GET['genre'] ?? '';
-// $annee_min = $_GET['annee_min'] ?? '';
-// $annee_max = $_GET['annee_max'] ?? '';
+session_start();
 
-// // Préparer la requête SQL avec les filtres
-// $sql = "SELECT * FROM `Livres` WHERE 1=1";
-// $params = [];
-// $types = '';
-
-// if ($titre) {
-//     $sql .= " AND titre LIKE ?";
-//     $params[] = "%$titre%";
-//     $types .= 's';
-// }
-// if ($auteur) {
-//     $sql .= " AND auteur LIKE ?";
-//     $params[] = "%$auteur%";
-//     $types .= 's';
-// }
-// if ($genre) {
-//     $sql .= " AND genre LIKE ?";
-//     $params[] = "%$genre%";
-//     $types .= 's';
-// }
-// if ($annee_min) {
-//     $sql .= " AND annee >= ?";
-//     $params[] = $annee_min;
-//     $types .= 'i';
-// }
-// if ($annee_max) {
-//     $sql .= " AND annee <= ?";
-//     $params[] = $annee_max;
-//     $types .= 'i';
-// }
-
-// // Ajouter la pagination à la requête SQL
-// $sql .= " LIMIT ? OFFSET ?";
-// $params[] = $results_per_page;
-// $params[] = $offset;
-// $types .= 'ii';
-
-// // Préparer et exécuter la requête SQL
-// $stmt = $conn->prepare($sql);
-// if ($types) {
-//     $stmt->bind_param($types, ...$params);
-// }
-// $stmt->execute();
-// $result = $stmt->get_result();
-
-// // Calculer le nombre total de résultats pour la pagination
-// $count_sql = "SELECT COUNT(*) AS total FROM `Livres` WHERE 1=1";
-// $count_params = [];
-// $count_types = '';
-
-// if ($titre) {
-//     $count_sql .= " AND titre LIKE ?";
-//     $count_params[] = "%$titre%";
-//     $count_types .= 's';
-// }
-// if ($auteur) {
-//     $count_sql .= " AND auteur LIKE ?";
-//     $count_params[] = "%$auteur%";
-//     $count_types .= 's';
-// }
-// if ($genre) {
-//     $count_sql .= " AND genre LIKE ?";
-//     $count_params[] = "%$genre%";
-//     $count_types .= 's';
-// }
-// if ($annee_min) {
-//     $count_sql .= " AND annee >= ?";
-//     $count_params[] = $annee_min;
-//     $count_types .= 'i';
-// }
-// if ($annee_max) {
-//     $count_sql .= " AND annee <= ?";
-//     $count_params[] = $annee_max;
-//     $count_types .= 'i';
-// }
-
-// $count_stmt = $conn->prepare($count_sql);
-// if ($count_types) {
-//     $count_stmt->bind_param($count_types, ...$count_params);
-// }
-// $count_stmt->execute();
-// $count_result = $count_stmt->get_result();
-// $total_rows = $count_result->fetch_assoc()['total'];
-// $total_pages = ceil($total_rows / $results_per_page);
+$username = $_SESSION["username"];
+echo 'User '.$username;
+if (!isset($username)) {
+    header("Location: form_login.php");
+}
 
 ?>
 <!DOCTYPE html>
@@ -126,9 +37,13 @@
 
     <div class="nav">
       <nav>
-        <button class="btn-nav active-page">Acceuil</button>
+        <button class="btn-nav active-page">
+          <a href="../index.php">Acceuil</a>
+        </button>
         ·
-        <button class="btn-nav">Contact</button>
+        <button class="btn-nav">
+          <a href="contact.html">Contact</a>
+        </button>
       </nav>
       <div class="buttons">
         <a href="../logout.php"><button class="btn-register">
@@ -139,35 +54,21 @@
 
     <div class="header">
                 <span id="logo">
-                  BookShelf
+                  <a href="collection.php">BookShelf</a>
                 </span>
-                <div class="action-buttons-bar">
-                    <!-- <a href="form_addBook.php"> -->
-                    <a href="search.php">
-                        <button id="myButtons"> <span class="action-buttons-icon"> 📝</span> <span class="action-buttons-text">Ajouter un livre </span></button>
-                    </a>
-                    <a href="search.php">
-                        <button> <span class="action-buttons-icon"> 🔍</span> <span class="action-buttons-text">Rechercher un livre </span></button>
-                    </a>
-                    <a href="#">
-                        <button> <span class="action-buttons-icon"> ↗️</span> <span class="action-buttons-text">Preter un livre </span></button>
-                    </a>
-                </div>
+       
                 <div class="page-title">
-                    <!-- <h3>Ma collection </h3> -->
-                    <!-- <small> - 27 oeuvres</small> -->
+                    <a class="btn-back" href="<?php echo $_SERVER['HTTP_REFERER']; ?>">
+                        🢨
+                    </a>
+                    <h3>Rechercher du livre</h3>
                 </div>
             </div>
 
   <main id="content">
     <?php
-    // if (isset($_GET["msg"])) {
-    //   $msg = htmlspecialchars($_GET["msg"]);
-    //   echo '<div class="alert alert-warning alert-dismissible fade show" role="alert">
-    //   ' . $msg . '
-    //   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    // </div>';
-    // }
+    $user_collection = getLivresUtilisateur($_SESSION['user_id']);
+    $_count = count($user_collection);
     ?>
 
     <div class="section-filter">
@@ -219,85 +120,43 @@
             </thead>
             <tbody>
                 <?php
-                // if ($result->num_rows > 0) {
-                // while ($row = $result->fetch_assoc()) {
+                foreach ($user_collection as $key => $item) {
                 ?>
                 <tr>
                     <td>
-                        La mort
                         <?php
-                        //  echo htmlspecialchars($row["titre"]); 
-                            ?>
+                        echo $item["titre"];
+                        ?>
                             </td>
                     <td>
-                        Montaigne
                         <?php
-                        //  echo htmlspecialchars($row["auteur"]); 
-                            ?>
+                        echo $item["auteur"];
+                        ?>
                             </td>
                     <td>
-                        2024
                         <?php
-                        //  echo htmlspecialchars($row["annee"]); 
-                            ?>
+                        echo $item["annee"];
+                        ?>
                             </td>
                     <td>
-                        Roman
                         <?php
-                        //  echo htmlspecialchars($row["genre"]); 
-                            ?>
+                        echo $item["genre"];
+                        ?>
                             </td>
                     <td>
-                        Disponible
                         <?php
-                        //  echo htmlspecialchars($row["status"]); 
-                            ?>
+                        echo $item["status"];
+                        ?>
                             </td>
                     <td>
-                    <!-- <a href="edit.php?id=<?php echo urlencode($row["id"]); ?>" class="link-dark"><i class="fa-solid fa-pen-to-square fs-5 me-3"></i></a> -->
-                    <a href="" class="link-dark"><i class="fa-solid fa-pen-to-square fs-5 me-3"></i></a>
-                    <!-- <a href="delete.php?id=<?php echo urlencode($row["id"]); ?>" class="link-dark"><i class="fa-solid fa-trash fs-5"></i></a> -->
-                    <a href="" class="link-dark"><i class="fa-solid fa-trash fs-5"></i></a>
+                    <a href="form_addBook.php?action=update&book=<?php echo $item["id"]; ?>" class="link-dark"><i class="fa-solid fa-pen-to-square fs-5 me-3"></i></a>
+                    <a href="../deleteBook.php?book=<?php echo $item["id"]; ?>&filename=<?php echo $livre['location']; ?>&next=here" class="link-dark"><i class="fa-solid fa-trash fs-5"></i></a>
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        La mort
-                        <?php
-                        //  echo htmlspecialchars($row["titre"]); 
-                            ?>
-                            </td>
-                    <td>
-                        Montaigne
-                        <?php
-                        //  echo htmlspecialchars($row["auteur"]); 
-                            ?>
-                            </td>
-                    <td>
-                        2024
-                        <?php
-                        //  echo htmlspecialchars($row["annee"]); 
-                            ?>
-                            </td>
-                    <td>
-                        Roman
-                        <?php
-                        //  echo htmlspecialchars($row["genre"]); 
-                            ?>
-                            </td>
-                    <td>
-                        Disponible
-                        <?php
-                        //  echo htmlspecialchars($row["status"]); 
-                            ?>
-                            </td>
-                    <td>
-                    <!-- <a href="edit.php?id=<?php echo urlencode($row["id"]); ?>" class="link-dark"><i class="fa-solid fa-pen-to-square fs-5 me-3"></i></a> -->
-                    <a href="" class="link-dark"><i class="fa-solid fa-pen-to-square fs-5 me-3"></i></a>
-                    <!-- <a href="delete.php?id=<?php echo urlencode($row["id"]); ?>" class="link-dark"><i class="fa-solid fa-trash fs-5"></i></a> -->
-                    <a href="" class="link-dark"><i class="fa-solid fa-trash fs-5"></i></a>
-                    </td>
-                </tr>
+                <?php
+                }
+                ?>
+                
                 <?php
                 // }
                 // } else {

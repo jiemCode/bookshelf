@@ -21,6 +21,13 @@ button:focus {
     outline: none;
 }
 
+.btn-back {
+    font-size: 1.5rem;
+    color: var(--primary);
+    padding: .5rem .25rem .5rem .5rem;
+    cursor: pointer;
+}
+
 .container {
     margin: .5rem;
     display: flex;
@@ -41,6 +48,19 @@ button:focus {
     }
 }
 
+.btn {
+    border: none;
+    font-size: large;
+    padding: .5rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 1rem;
+    background-color: var(--wheat);
+    a {
+        color: var(--primary);
+    }
+}
+
 .container .nav button {
     border: none;
     font-size: large;
@@ -49,7 +69,7 @@ button:focus {
     cursor: pointer;
 }
 
-.container .active-page {
+.container .active-page a {
     color: var(--primary);
 }
 
@@ -59,7 +79,7 @@ button:focus {
     color: var(--white);
 }
 
-.container .nav .btn-register:hover, .container .nav .btn-nav:hover {
+.container .nav .btn-register:hover, .container .nav .btn-nav>a:hover {
     color: var(--primary);
 }
 
@@ -76,7 +96,7 @@ button:focus {
     margin-bottom: 3rem;
 }
 
-.container .header > #logo {
+.container .header > #logo > a {
     color: var(--primary);
     font-size: 3rem;
     font-family: cursive;
@@ -282,6 +302,8 @@ form.add-book {
 form .form-add-book {
     display: flex;
     flex-wrap: wrap;
+    align-items: start;
+    gap: 3rem;
 }
 
 form .form-add-book .book-img {
@@ -302,10 +324,16 @@ form .form-add-book .book-img label {
     padding: 1rem .5rem;
 }
 
+.label-hint {
+    color: var(--primary);
+    text-transform: capitalize;
+}
+
+
 form .form-add-book .book-img img {
     width: 340px;
     height: 350px;
-    border-radius: 1rem 1rem 0 0;
+    border-radius: 1rem;
     /* object-fit: ; */
     overflow: hidden;
 }
@@ -314,7 +342,7 @@ form .form-add-book .book-labels {
     padding-top: 2rem;
     display: flex;
     flex-direction: column;
-    margin-left: 2rem;
+    /* margin-left: 2rem; */
     gap: 1rem;
     font-size: x-large;
 }
@@ -333,6 +361,7 @@ form .form-add-book .book-labels input,
 form .form-add-book .book-labels select {
     font-size: x-large;
     padding: .5rem;
+    text-transform: capitalize;
     border: 2px solid var(--primary);
     border-radius: 4px;
 }

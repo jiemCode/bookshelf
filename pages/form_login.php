@@ -8,7 +8,7 @@
 <body>
     <form action="../login.php" method="post">
         <label for="">Nom d'utilisateur</label>
-        <input type="text" name="username" id="" value="<?php  echo $_GET['username']?>">
+        <input type="text" name="username" id="" value="<?php  echo isset($_GET['username']) ? $_GET['username'] : '' ?>">
         <label for="">Mot de passe</label>
         <input type="password" name="password" id="">
         <input type="submit" value="Soumettre">

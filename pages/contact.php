@@ -11,24 +11,24 @@
     <body>
 
         <?php
-        require 'services.php';
+        require '../services.php';
         ?>
 
         <div class="container">
             <div class="nav">
                 <nav>
-                    <button class="btn-nav active-page">
-                        <a href="">Acceuil</a>
+                    <button class="btn-nav">
+                        <a href="../index.php">Acceuil</a>
                     </button>
                     ·
-                    <button class="btn-nav">
-                        <a href="pages/contact.php">Contact</a>
+                    <button class="btn-nav active-page">
+                        <a href="#">Contact</a>
                     </button>
                 </nav>
                 <div class="buttons">
-                    <a href="pages/form_login.php"><button class="btn-login">Se connecter</button></a>
+                    <a href="form_login.php"><button class="btn-login">Se connecter</button></a>
                     ↔
-                    <a href="pages/form_register.php"><button class="btn-register">S'inscrire</button></a>
+                    <a href="form_register.php"><button class="btn-register">S'inscrire</button></a>
                 </div>
             </div>
             <div class="header">
@@ -36,24 +36,21 @@
                     <a href="#">BookShelf</a>
                 </span>
                 <div class="action-buttons-bar">
-                    <a href="pages/collection.php">
+                    <a href="collection.php">
                         <button>Créer une collection</button>
                     </a>
                 </div>
             </div>
             <main>
-                <img src="static/image/illustration.jpg" alt="bookshef-image">
-                <h1>Chaque livre a une histoire, collectionnez-les toutes sur <span>BookShelf</span></h1>
+                <h1>Support client disponible <span>24H/24</span></h1>
             </main>
             <div class="description">
-                <div class="why">
-                    <h2 class="title">Pourquoi BookShelf ?</h2>
-                </div>
+                
                 <div>
                     <ul>
-                        <li><small><span class="icon-check">🔎</span> Gardez une Trace de Votre Collection de Livres</small></li>
-                        <li><small><span class="icon-check">🤞</span> Votre Bibliothèque Personnelle à Portée de Main</small></li>
-                        <li><small><span class="icon-check">💯</span> Découvrez une experience unique de la bibliophilie</small></li>
+                        <li><small><span class="icon-check">📬</span> support@bookshelf.sn</small></li>
+                        <li><small><span class="icon-check">📱</span> +33 827 45 45</small></li>
+                        <li><small><span class="icon-check">🏢</span> Diamniadio BP 24404</small></li>
                     </ul>
                 </div>
             </div>
