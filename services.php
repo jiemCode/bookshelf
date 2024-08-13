@@ -2,7 +2,11 @@
 
 define ('SITE_ROOT', realpath(dirname(__FILE__)));
 
-$DB = 'sqlite:database/development_v2.db';
+// $DB = 'sqlite:database/development_v2.db';
+
+$pdo =new PDO("sqlite:database/development_v3.db","","",array(
+    PDO::ATTR_PERSISTENT => true
+));
 
 function opendatabase(){
     global $pdo;
@@ -30,10 +34,8 @@ function isValidUser($username) {
         $count = $stmt->fetchColumn();
 
         if ($count > 0) {
-            echo "User exists";
             return true;
         } else {
-            echo "User doesn't exit";
             return false;
         }
         
@@ -100,8 +102,7 @@ function insererUtilisateur($nom, $email, $motDePasse) {
     
     try {
         $pdo = opendatabase();
-        // $pdo = new PDO($DB);
-        // $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
 
         $pdo->beginTransaction();
 
@@ -120,24 +121,24 @@ function insererUtilisateur($nom, $email, $motDePasse) {
 
         return $userId; // Retourner l'ID de l'utilisateur inséré
     } catch (PDOException $e) {
+        global $pdo;
         $pdo->rollBack();
         echo "Error: " . $e->getMessage();
     }
 }
 
 
-function insererLivre($titre, $auteur, $annee, $status, $genre, $collection_id, $filename) {
+function insererLivre($titre, $auteur, $annee, $genre, $collection_id, $filename) {
     
     
     try {
         $pdo = opendatabase();
-        // $pdo = new PDO($DB);
-        // $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
 
         $pdo->beginTransaction();
 
-        $stmt = $pdo->prepare("INSERT INTO Livres (titre, auteur, annee, status, genre, location) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$titre, $auteur, $annee, $status, $genre, $filename]);
+        $stmt = $pdo->prepare("INSERT INTO Livres (titre, auteur, status, annee, genre, location) VALUES (?, ?, 'Disponible', ?, ?, ?)");
+        $stmt->execute([$titre, $auteur, $annee, $genre, $filename]);
 
 
         $livre_id = $pdo->lastInsertId(); // Retourner l'ID du livre inséré
@@ -159,11 +160,19 @@ function insererPret($idUtilisateur, $idLivre, $nom) {
     
     try {
         $pdo = opendatabase();
-        // $pdo = new PDO($DB);
-        // $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+
+        $pdo->beginTransaction();
 
         $stmt = $pdo->prepare("INSERT INTO Prets (id_utilisateur, id_livre, nom) VALUES (?, ?, ?)");
         $stmt->execute([$idUtilisateur, $idLivre, $nom]);
+
+        $stmt = $pdo->prepare("
+            UPDATE Livres SET status = 'Prêté' WHERE id = ?
+        ");
+        $stmt->execute([$idLivre]);
+        
+        $pdo->commit();
 
         return $pdo->lastInsertId(); // Retourner l'ID du prêt inséré
     } catch (PDOException $e) {
@@ -179,8 +188,7 @@ function getLivresUtilisateur($idUtilisateur) {
     
     try {
         $pdo = opendatabase();
-        // $pdo = new PDO($DB);
-        // $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
 
         $stmt = $pdo->prepare("
             SELECT Livres.*
@@ -203,8 +211,7 @@ function getLivreUtilisateur($idUtilisateur, $idLivre) {
     
     try {
         $pdo = opendatabase();
-        // $pdo = new PDO($DB);
-        // $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
 
         $stmt = $pdo->prepare("
             SELECT Livres.*
@@ -222,24 +229,67 @@ function getLivreUtilisateur($idUtilisateur, $idLivre) {
 }
 
 
-function getPretUtilisateur($idUtilisateur) {
+function getLivreDisponible($idUtilisateur) {
     
     
     try {
         $pdo = opendatabase();
-        // $pdo = new PDO($DB);
-        // $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
 
         $stmt = $pdo->prepare("
             SELECT Livres.*
             FROM Livres
             JOIN CollectionLivres ON Livres.id = CollectionLivres.id_livre
             JOIN Collections ON CollectionLivres.id_collection = Collections.id
-            WHERE Collections.id_utilisateurs = ? AND Livres.status = 'disponible'
+            WHERE Collections.id_utilisateurs = ? AND Livres.status = 'Disponible'
         ");
         $stmt->execute([$idUtilisateur]);
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
+}
+
+function getLivrePrete($idUtilisateur) {
+    
+    
+    try {
+        $pdo = opendatabase();
+        
+
+        $stmt = $pdo->prepare("
+            SELECT Livres.*, Prets.*
+            FROM Livres
+            JOIN CollectionLivres ON Livres.id = CollectionLivres.id_livre
+            JOIN Collections ON CollectionLivres.id_collection = Collections.id
+            RIGHT JOIN Prets ON Prets.id_livre = Livres.id
+            WHERE Collections.id_utilisateurs = ? AND Livres.status = 'Prêté'
+        ");
+        $stmt->execute([$idUtilisateur]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
+}
+
+
+function getPretUtilisateur($idUtilisateur, $idPret) {
+    
+    
+    try {
+        $pdo = opendatabase();
+        
+
+        $stmt = $pdo->prepare("
+            SELECT Prets.*
+            FROM Prets
+            WHERE id_utilisateur = ? AND id = ?
+        ");
+        $stmt->execute([$idUtilisateur, $idPret]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
         echo "Error: " . $e->getMessage();
     }
@@ -254,8 +304,7 @@ function modifierUtilisateurNomEmail($idUtilisateur, $nouveauNom, $nouvelEmail) 
     
     try {
         $pdo = opendatabase();
-        // $pdo = new PDO($DB);
-        // $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
 
         $stmt = $pdo->prepare("UPDATE Utilisateurs SET nom = ?, email = ? WHERE id = ?");
         $stmt->execute([$nouveauNom, $nouvelEmail, $idUtilisateur]);
@@ -272,8 +321,7 @@ function modifierUtilisateurMotDePasse($idUtilisateur, $nouveauMotDePasse) {
     
     try {
         $pdo = opendatabase();
-        // $pdo = new PDO($DB);
-        // $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
 
         $stmt = $pdo->prepare("UPDATE Utilisateurs SET motDePasse = ? WHERE id = ?");
         $stmt->execute([$nouveauMotDePasse, $idUtilisateur]);
@@ -285,16 +333,15 @@ function modifierUtilisateurMotDePasse($idUtilisateur, $nouveauMotDePasse) {
 }
 
 
-function modifierLivre($idLivre, $nouveauTitre, $nouvelAuteur, $nouvelleAnnee, $nouveauStatus, $nouveauGenre, $nouvelleLocation) {
+function modifierLivre($idLivre, $nouveauTitre, $nouvelAuteur, $nouvelleAnnee, $nouveauGenre, $nouvelleLocation) {
     
     
     try {
         $pdo = opendatabase();
-        // $pdo = new PDO($DB);
-        // $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
 
-        $stmt = $pdo->prepare("UPDATE Livres SET titre = ?, auteur = ?, annee = ?, status = ?, genre = ?, location = ? WHERE id = ?");
-        $stmt->execute([$nouveauTitre, $nouvelAuteur, $nouvelleAnnee, $nouveauStatus, $nouveauGenre, $nouvelleLocation, $idLivre]);
+        $stmt = $pdo->prepare("UPDATE Livres SET titre = ?, auteur = ?, annee = ?, genre = ?, location = ? WHERE id = ?");
+        $stmt->execute([$nouveauTitre, $nouvelAuteur, $nouvelleAnnee, $nouveauGenre, $nouvelleLocation, $idLivre]);
 
         echo "Le livre avec l'ID $idLivre a été mis à jour avec succès.";
     } catch (PDOException $e) {
@@ -303,18 +350,19 @@ function modifierLivre($idLivre, $nouveauTitre, $nouvelAuteur, $nouvelleAnnee, $
 }
 
 
-function modifierStatutPret($idPret, $nouveauStatut) {
+function modifierStatutLivre($idLivre, $nouveauStatut) {
     
     
     try {
         $pdo = opendatabase();
-        // $pdo = new PDO($DB);
-        // $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
 
-        $stmt = $pdo->prepare("UPDATE Prets SET status = ? WHERE id = ?");
-        $stmt->execute([$nouveauStatut, $idPret]);
+        $stmt = $pdo->prepare("
+            UPDATE Livre SET status = ? WHERE id = ?
+        ");
+        $stmt->execute([$nouveauStatut, $idLivre]);
 
-        echo "Le statut du prêt avec l'ID $idPret a été mis à jour avec succès.";
+        echo "Le statut du livre avec l'ID $idLivre a été mis à jour avec succès.";
     } catch (PDOException $e) {
         echo "Error: " . $e->getMessage();
     }
@@ -329,8 +377,7 @@ function supprimerLivre($idLivre) {
     
     try {
         $pdo = opendatabase();
-        // $pdo = new PDO($DB);
-        // $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
 
         $pdo->beginTransaction();
 
@@ -338,30 +385,44 @@ function supprimerLivre($idLivre) {
         $stmt = $pdo->prepare("DELETE FROM CollectionLivres WHERE id_livre = ?");
         $stmt->execute([$idLivre]);
 
+        $stmt = $pdo->prepare("
+            DELETE FROM Prets 
+            WHERE id_livre = ?
+            AND EXISTS (SELECT 1 FROM Prets WHERE id_livre = ?);
+        ");
+        $stmt->execute([$idLivre, $idLivre]);
+
         // Supprimer le livre de la table Livres
         $stmt = $pdo->prepare("DELETE FROM Livres WHERE id = ?");
         $stmt->execute([$idLivre]);
+
 
         $pdo->commit();
 
         echo "Le livre avec l'ID $idLivre a été supprimé avec succès.";
     } catch (PDOException $e) {
+        global $pdo;
         $pdo->rollBack();
         echo "Error: " . $e->getMessage();
     }
 }
 
 
-function supprimerPret($idPret) {
+function supprimerPret($idPret, $idLivre) {
     
     
     try {
         $pdo = opendatabase();
-        // $pdo = new PDO($DB);
-        // $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
 
+        $pdo->beginTransaction();
+        
         $stmt = $pdo->prepare("DELETE FROM Prets WHERE id = ?");
         $stmt->execute([$idPret]);
+
+        modifierStatutLivre($idLivre, "Disponible");
+        
+        $pdo->commit();
 
         echo "Le prêt avec l'ID $idPret a été supprimé avec succès.";
     } catch (PDOException $e) {
@@ -375,8 +436,7 @@ function supprimerUtilisateur($idUtilisateur) {
     
     try {
         $pdo = opendatabase();
-        // $pdo = new PDO($DB);
-        // $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
 
         $pdo->beginTransaction();
 
@@ -396,6 +456,7 @@ function supprimerUtilisateur($idUtilisateur) {
 
         echo "L'utilisateur avec l'ID $idUtilisateur a été supprimé avec succès.";
     } catch (PDOException $e) {
+        global $pdo;
         $pdo->rollBack();
         echo "Error: " . $e->getMessage();
     }

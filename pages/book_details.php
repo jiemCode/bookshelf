@@ -5,7 +5,6 @@ require '../services.php';
 session_start();
 
 $username = $_SESSION["username"];
-echo 'User '.$username;
 if (isset($username)) {
     // 
 } else {
@@ -66,7 +65,7 @@ if (isset($_GET["book"])) {
                     </a>
                 </div> -->
                 <div class="page-title">
-                    <a class="btn-back" href="<?php echo $_SERVER['HTTP_REFERER']; ?>">
+                    <a class="btn-back" href="collection.php">
                         🢨
                     </a>
                     <h3>Details du livre</h3>

@@ -5,6 +5,12 @@ require "services.php";
 
 function authentifier($login, $password) {
     if (!isValidUser($login)) {
+        echo "
+            <script>
+                alert('Vous n'etes pas autorise !');
+                window.location = '/pages/form_login.php'
+            </script>
+        ";
         return ;
     }
 
@@ -15,18 +21,26 @@ function authentifier($login, $password) {
         $_SESSION['user_id'] = getUserId($login);
         $_SESSION['collection_id'] = getCollectionId($_SESSION['user_id']);
         header('Location: pages/collection.php?username='.$login);
+        echo "
+            <script>
+                alert('Vous n'etes pas autorise !');
+                window.location = '/pages/form_login.php?username=$login'
+            </script>
+        ";
         
     } else {
-        echo "<h1>You n'etes pa autorise ! &#128078 </h1>";
-        // 
-        echo "<h2><a href='pages/form_login.php?username=".$login."'>Retry</a></h2>";
+        echo "
+            <script>
+                alert('Login ou mot de passe incorrects !');
+                window.location = '/pages/form_login.php?username=$login'
+            </script>
+        ";
     }
 }
 
-if (isset($_POST["username"]) && isset($_POST["password"])) {
-    $username = $_POST["username"];
-    $password = $_POST["password"];
+if (isset($_POST["nom"]) && isset($_POST["motdepasse"])) {
+    $username = $_POST["nom"];
+    $password = $_POST["motdepasse"];
     
     authentifier($username, $password);
-    echo "Hi, ".$_SESSION["username"];
 }

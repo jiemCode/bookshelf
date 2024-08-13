@@ -5,6 +5,10 @@
   --white: #ffffff;
 }
 
+#scale {
+  transform: scale(2);
+}
+
 #content {
   /* background-color: aqua; */
   width: 60%;

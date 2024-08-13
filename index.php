@@ -12,6 +12,9 @@
 
         <?php
         require 'services.php';
+
+        session_start();
+
         ?>
 
         <div class="container">
@@ -26,21 +29,47 @@
                     </button>
                 </nav>
                 <div class="buttons">
+                <?php
+                if (isset($_SESSION["username"])) {
+                ?>
+                    <a href="logout.php"><button class="btn-register">Deconnexion</button></a>
+                <?php
+                } else {
+                ?>
                     <a href="pages/form_login.php"><button class="btn-login">Se connecter</button></a>
                     ↔
                     <a href="pages/form_register.php"><button class="btn-register">S'inscrire</button></a>
+                <?php
+                } 
+                ?>
                 </div>
             </div>
-            <div class="header">
-                <span id="logo">
-                    <a href="#">BookShelf</a>
-                </span>
-                <div class="action-buttons-bar">
-                    <a href="pages/collection.php">
-                        <button>Créer une collection</button>
-                    </a>
+
+            <div id="header-block">
+                <div class="header" id="header">
+                    <span id="logo">
+                        <a href="#">BookShelf</a>
+                    </span>
+                    <div class="action-buttons-bar">
+                        <a href="pages/collection.php">
+                            <button>
+                            <?php
+                            if (isset($_SESSION["username"])) {
+                            ?>
+                                Voir ma collection
+                            <?php
+                            } else {
+                            ?>
+                                Créer une collection
+                            <?php
+                            } 
+                            ?>
+                            </button>
+                        </a>
+                    </div>
                 </div>
             </div>
+
             <main>
                 <img src="static/image/illustration.jpg" alt="bookshef-image">
                 <h1>Chaque livre a une histoire, collectionnez-les toutes sur <span>BookShelf</span></h1>

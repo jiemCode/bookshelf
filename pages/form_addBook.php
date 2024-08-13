@@ -5,7 +5,6 @@ require '../services.php';
 session_start();
 
 $username = $_SESSION["username"];
-echo 'User '.$username;
 if (isset($username)) {
     // 
 } else {
@@ -20,9 +19,9 @@ if (isset($_GET["book"])) {
     $action = "insert";
 }
 
-echo $livre;
-echo $action;
-echo $livre_id;
+// echo $livre;
+// echo $action;
+// echo $livre_id;
 
 ?>
 
@@ -35,23 +34,24 @@ echo $livre_id;
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="/static/css/style.css">
+        <link rel="stylesheet" href="/static/css/user_log.css">
     </head>
     <body>
 
         <div class="container">
             <div class="nav">
                 <nav>
-                    <button class="btn-nav active-page">
+                    <button class="btn-nav">
                         <a href="../index.php">Acceuil</a>
                     </button>
                     ·
-                    <button class="btn-nav">Contact</button>
+                    <button class="btn-nav">
+                        <a href="contact.php">Contact</a>
+                    </button>
                 </nav>
-                <div class="buttons">
-                    <!-- <button class="btn-login">Se connecter</button>
-                    ↔ -->
-                    <a href="../logout.php"><button class="btn-register"> 
-                        Deconnexion</button></a>
+                <div class="user-container">
+                    <div class="username"><?php echo $username; ?></div>
+                    <a href="../logout.php" class="logout-btn">Déconnexion</a>
                 </div>
             </div>
             <div class="header">
@@ -63,13 +63,13 @@ echo $livre_id;
                     <a class="btn-back" href="<?php echo $_SERVER['HTTP_REFERER']; ?>">
                         🢨
                     </a>
-                    <h3>Rechercher du livre</h3>
+                    <h3>Ajouter un livre</h3>
                 </div>
             </div>
             
             <main id="content">
                 
-                <form action="../upload_file.php?action=<?php echo $action; ?>&livre_id=<?php echo $livre_id; ?>" method="post" class="add-book" enctype="multipart/form-data">
+                <form action="../upload_file.php?action=<?php echo $action; ?>&livre_id=<?php echo $livre_id; ?>&filename=<?php echo $livre["location"]; ?>" method="post" class="add-book" enctype="multipart/form-data">
                     <div class="form-add-book">
 
                         <div class="book-img">
@@ -98,24 +98,32 @@ echo $livre_id;
                             <div class="input-block">
                                 <label for="">Genre</label>
                                 <select name="genre" id="" required>
-                                
-                                    <option value=""><?php echo isset($livre['genre']) ? $livre['genre'] : ""; ?></option>
-                                    <option value="">Roman</option>
-                                    <option value="">Essai</option>
-                                    <option value="">Theatre</option>
-                                    <option value="">SF</option>
-                                    <option value="">Autres</option>
+                                    <?php $default_genre = isset($livre['genre']) ? $livre['genre'] : "Autres"; ?>
+                                    <option selected value="<?php echo $default_genre; ?>"><?php echo $default_genre; ?></option>
+                                    <option value="Roman">Roman</option>
+                                    <option value="Essai">Essai</option>
+                                    <option value="Theatre">Theatre</option>
+                                    <option value="SF">SF</option>
+                                    <option value="Autres">Autres</option>
                                 </select>
                             </div>
-                            <div class="input-block">
+                            <!-- <div class="input-block">
                                 <label for="">Statut</label>
-                                <select name="status" id="" required>
-                                
-                                    <option value=""><?php echo isset($livre['status']) ? $livre['status'] : ""; ?></option>
-                                    <option value="">Disponible</option>
-                                    <option value="">Prêté</option>
+                                <select name="status" id="" required 
+                                <?php
+                                if ($action === "update") {
+                                    ?>
+                                     disabled
+                                 <?php
+                                }
+                                 ?>
+                                >
+                                    <?php $default_status = isset($livre['status']) ? $livre['status'] : "Disponible"; ?>
+                                    <option selected value="<?php echo $default_status; ?>"><?php echo $default_status; ?></option>
+                                    <option value="Disponible">Disponible</option>
+                                    <option value="Prêté">Prêté</option>
                                 </select>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <div class="add-book-btn">

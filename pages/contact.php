@@ -1,66 +1,40 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="/static/css/style.css">
-    </head>
-    <body>
-
-        <?php
-        require '../services.php';
-        ?>
-
-        <div class="container">
-            <div class="nav">
-                <nav>
-                    <button class="btn-nav">
-                        <a href="../index.php">Acceuil</a>
-                    </button>
-                    ·
-                    <button class="btn-nav active-page">
-                        <a href="#">Contact</a>
-                    </button>
-                </nav>
-                <div class="buttons">
-                    <a href="form_login.php"><button class="btn-login">Se connecter</button></a>
-                    ↔
-                    <a href="form_register.php"><button class="btn-register">S'inscrire</button></a>
-                </div>
-            </div>
-            <div class="header">
-                <span id="logo">
-                    <a href="#">BookShelf</a>
-                </span>
-                <div class="action-buttons-bar">
-                    <a href="collection.php">
-                        <button>Créer une collection</button>
-                    </a>
-                </div>
-            </div>
-            <main>
-                <h1>Support client disponible <span>24H/24</span></h1>
-            </main>
-            <div class="description">
-                
-                <div>
-                    <ul>
-                        <li><small><span class="icon-check">📬</span> support@bookshelf.sn</small></li>
-                        <li><small><span class="icon-check">📱</span> +33 827 45 45</small></li>
-                        <li><small><span class="icon-check">🏢</span> Diamniadio BP 24404</small></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <footer>
-            &copy 2024 - Tous droits réservés
-        </footer>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page de Contact</title>
+    <link rel="stylesheet" href="../static/css/forms.css"> 
+</head>
+<body>
+    <div id="btn-back">
+        <a class="btn-back" href="collection.php">
+            🢨
+        </a>
+    </div>
+    <div class="login_form">
+        <h3>Contactez-nous</h3>
         
-        <script src="/static/js/script.js" async defer></script>
-    </body>
+        <!-- Formulaire de contact -->
+        <form action="../processcontact.php" method="post">
+            <div class="input_box">
+                <label for="nom">Nom</label>
+                <input type="text" id="nom" name="nom" placeholder="Entrez votre nom">
+            </div>
+            <div class="input_box">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Entrez votre email">
+            </div>
+            <div class="input_box">
+                <label for="sujet">Sujet</label>
+                <input type="text" id="objet" name="objet" placeholder="Entrez le sujet de votre message">
+            </div>
+            <div class="input_box">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="5" placeholder="Écrivez votre message"></textarea>
+            </div>
+            <button type="submit">Envoyer</button>
+        </form>
+    </div>
+</body>
 </html>
-

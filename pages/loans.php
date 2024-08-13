@@ -60,60 +60,26 @@ if (!isset($username)) {
                     <a class="btn-back" href="collection.php">
                         🢨
                     </a>
-                    <h3>Rechercher un livre</h3>
+                    <h3>Livre(s) prete(s)</h3>
                 </div>
             </div>
 
-  <main id="content">
+  <main id="" style="align-items: center; justify-content: center;">
     <?php
-    $user_collection = getLivresUtilisateur($_SESSION['user_id']);
+    $user_collection = getLivrePrete($_SESSION['user_id']);
     $_count = count($user_collection);
     ?>
 
-    <div class="section-filter">
-        <form class="filter-form" method="get">
-            <label for="">Auteur</label>
-            <input type="text" class="form-control" name="auteur" placeholder="Auteur" value="<?php 
-            // echo htmlspecialchars($auteur); 
-            ?>">
-            <label for="">Genre</label>
-            <input type="text" class="form-control" name="genre" placeholder="Genre" value="<?php 
-            // echo htmlspecialchars($genre); 
-            ?>">
-            <label for="">Annee</label>
-            <div class="year-input">
-                    <input type="number" class="form-control" name="annee_min" placeholder="Année min" value="<?php 
-                    // echo htmlspecialchars($annee_min); 
-                    ?>">
-                    <input type="number" class="form-control" name="annee_max" placeholder="Année max" value="<?php 
-                    // echo htmlspecialchars($annee_max); 
-                    ?>">
-            </div>
-            <div class="button">
-                <button type="submit" class="btn btn-primary">Appliquer</button>
-                <button type="reset" class="btn btn-secondary">Réinitialiser</button>
-            </div>
-        </form>
-    </div>
-
+    
     <div class="section-result">
-        <div class="title-input">
-            <!-- <div class=""> -->
-                <input type="text" class="form-control" name="titre" placeholder="Titre" value="<?php 
-                    // echo htmlspecialchars($titre); 
-                ?>">
-                <button type="submit" class="btn btn-primary">Rechercher</button>
-                <button type="reset" class="btn btn-secondary">Réinitialiser</button>
-        </div>
-            
+        
         <table class="table table-hover text-center">
             <thead class="table-dark">
                 <tr>
                 <th scope="col">Titre</th>
                 <th scope="col">Auteur</th>
-                <th scope="col">Année</th>
-                <th scope="col">Genre</th>
-                <th scope="col">Status</th>
+                <th scope="col">Prete a</th>
+                <th scope="col">Date</th>
                 <th scope="col">Action</th>
                 </tr>
             </thead>
@@ -134,7 +100,8 @@ if (!isset($username)) {
                             </td>
                     <td>
                         <?php
-                        echo $item["annee"];
+                        echo $item["nom"];
+                        // print_r($item);
                         ?>
                             </td>
                     <td>
@@ -142,14 +109,10 @@ if (!isset($username)) {
                         echo $item["genre"];
                         ?>
                             </td>
-                    <td>
-                        <?php
-                        echo $item["status"];
-                        ?>
-                            </td>
+                    
                     <td>
                     <a href="form_addBook.php?action=update&book=<?php echo $item["id"]; ?>" class="link-dark"><i class="fa-solid fa-pen-to-square fs-5 me-3"></i></a>
-                    <a href="../deleteBook.php?book=<?php echo $item["id"]; ?>&filename=<?php echo $livre['location']; ?>&next=here" class="link-dark"><i class="fa-solid fa-trash fs-5"></i></a>
+                    <a href="../deleteLoan.php?loan=<?php echo $item["id"]; ?>&book=<?php echo $item['id_livre']; ?>&next=here" class="link-dark"><i class="fa-solid fa-trash fs-5"></i></a>
                     </td>
                 </tr>
                 <?php

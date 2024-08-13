@@ -5,7 +5,6 @@ require '../services.php';
 session_start();
 
 $username = $_SESSION["username"];
-echo 'User '.$username;
 if (!isset($username)) {
     header("Location: form_login.php");
 }
@@ -21,9 +20,10 @@ if (!isset($username)) {
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="/static/css/style.css">
+        <link rel="stylesheet" href="/static/css/user_log.css">
     </head>
     <body>
-
+<!-- 
         <div id="myPopup" class="popup">
             <div class="popup-content">
                 <h2>Ajouter un livre</h2>
@@ -64,7 +64,7 @@ if (!isset($username)) {
                     </div>
                 </form>
             </div>
-        </div> 
+        </div>  -->
 
         
         <div class="container">
@@ -78,10 +78,11 @@ if (!isset($username)) {
                         <a href="contact.php">Contact</a>
                     </button>
                 </nav>
-                <div class="buttons">
-                    <a href="../logout.php"><button class="btn-register"> 
-                        Deconnexion</button></a>
+                <div class="user-container">
+                    <div class="username"><?php echo $username; ?></div>
+                    <a href="../logout.php" class="logout-btn">Déconnexion</a>
                 </div>
+                
             </div>
             <div class="header">
                 <span id="logo">
@@ -96,6 +97,9 @@ if (!isset($username)) {
                     </a>
                     <a href="form_addLoan.php">
                         <button> <span class="action-buttons-icon"> ↗️</span> <span class="action-buttons-text">Preter un livre </span></button>
+                    </a>
+                    <a href="loans.php">
+                        <button> <span class="action-buttons-icon"> 🗒️</span> <span class="action-buttons-text">Voir les prets </span></button>
                     </a>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 :root {
     --primary: #FF864D;
+    /* --primary: #FFA07A; */
     --wheat: #f5deb3;
     --secondary: #111116;
     --white: #ffffff;
@@ -20,6 +21,14 @@ textarea:focus,
 button:focus {
     outline: none;
 }
+
+#header-block {
+    width: 100%;
+    background-color: var(--white);
+    position: sticky;
+    top: 0;
+}
+
 
 .btn-back {
     font-size: 1.5rem;
