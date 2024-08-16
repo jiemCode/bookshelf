@@ -22,7 +22,7 @@ if (isset($_GET["book"])) {
     if (isset($_GET["next"]) && $_GET["next"] === "here") {
         header('Location: ' . $_SERVER['HTTP_REFERER']);
     } else {
-        header("Location: pages/collection.php");
+        header("Location: pages/collection.php?trigger=error&msg= Livre supprime !");
     }
     
 }

@@ -27,6 +27,7 @@ if (!isset($username)) {
   <link rel="stylesheet" href="../static/css/style.css">
   <link rel="stylesheet" href="../static/css/style_dp.css">
   <link rel="stylesheet" href="../static/css/user_log.css">
+  <link rel="stylesheet" href="../static/css/popup.css" />
 
   <title>Liste des Livres</title>
 </head>
@@ -72,6 +73,11 @@ if (!isset($username)) {
 
     
     <div class="section-result">
+
+        <?php
+        if ($_count !== 0) {
+        ?>        
+
         
         <table class="table table-hover text-center">
             <thead class="table-dark">
@@ -106,7 +112,7 @@ if (!isset($username)) {
                             </td>
                     <td>
                         <?php
-                        echo $item["genre"];
+                        echo $item["date"];
                         ?>
                             </td>
                     
@@ -142,9 +148,9 @@ if (!isset($username)) {
               <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
                 <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $i])); ?>"><?php echo $i; ?> 1</a>
               </li>
-              <li class="page-item <?php echo $i == $page ? '' : ''; ?>">
+              <!-- <li class="page-item <?php echo $i == $page ? '' : ''; ?>">
                 <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $i])); ?>"><?php echo $i; ?> 2</a>
-              </li>
+              </li> -->
             <?php // endfor; ?>
     
             <?php // if ($page < $total_pages): ?>
@@ -155,7 +161,19 @@ if (!isset($username)) {
               </li>
             <?php // endif; ?>
           </ul>
-        </nav> 
+        </nav>
+
+        <?php
+        } else {
+        ?> 
+          <div id="not-found_placeholder">
+            <img src="../static/image/empty.png" alt="">
+            <h2>Aucun livre prete actuellement !</h2>
+          </div>
+        
+        <?php
+        }
+        ?>
 
     </div>    
             

@@ -10,6 +10,75 @@ if (!isset($username)) {
     header("Location: form_login.php");
 }
 
+
+// Initialisation des paramètres de recherche dans la session (si ce n'est pas déjà fait)
+if (!isset($_SESSION['params'])) {
+    $_SESSION['params'] = [
+        'annee_min' => '',
+        'annee_max' => '',
+        'titre' => '',
+        'auteur' => '',
+        'genre' => '',
+        'status' => ''
+    ];
+}
+
+// Mise à jour des paramètres avec les valeurs fournies dans la requête
+if (isset($_GET['annee_min'])) {
+    $_SESSION['params']['annee_min'] = $_GET['annee_min'];
+}
+if (isset($_GET['annee_max'])) {
+    $_SESSION['params']['annee_max'] = $_GET['annee_max'];
+}
+if (isset($_GET['titre'])) {
+    $_SESSION['params']['titre'] = $_GET['titre'];
+}
+if (isset($_GET['auteur'])) {
+    $_SESSION['params']['auteur'] = $_GET['auteur'];
+}
+if (isset($_GET['genre'])) {
+    $_SESSION['params']['genre'] = $_GET['genre'];
+}
+if (isset($_GET['status'])) {
+    $_SESSION['params']['status'] = $_GET['status'];
+}
+// Début de la requête SQL
+$sql = "SELECT * FROM Livres WHERE 1=1";
+
+// Liste des paramètres pour la requête
+$params = [];
+
+// Ajout dynamique des conditions et des paramètres en fonction des valeurs non vides dans $_SESSION['params']
+if (!empty($_SESSION['params']['annee_min']) && !empty($_SESSION['params']['annee_max'])) {
+    $sql .= " AND annee BETWEEN :annee_min AND :annee_max";
+    $params[':annee_min'] = $_SESSION['params']['annee_min'];
+    $params[':annee_max'] = $_SESSION['params']['annee_max'];
+}
+
+if (!empty($_SESSION['params']['titre'])) {
+    $sql .= " AND titre LIKE :titre";
+    $params[':titre'] = '%' . $_SESSION['params']['titre'] . '%';
+    $_SESSION['params']['titre'] = '';
+}
+
+if (!empty($_SESSION['params']['auteur'])) {
+    $sql .= " AND auteur LIKE :auteur";
+    $params[':auteur'] = '%' . $_SESSION['params']['auteur'] . '%';
+}
+
+if (!empty($_SESSION['params']['genre'])) {
+    $sql .= " AND genre LIKE :genre";
+    $params[':genre'] = '%' . $_SESSION['params']['genre'] . '%';
+}
+
+if (!empty($_SESSION['params']['status'])) {
+    $sql .= " AND status LIKE :status";
+    $params[':status'] = '%' . $_SESSION['params']['status'] . '%';
+}
+
+// header("Location : /pages/search.php");
+
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -27,6 +96,7 @@ if (!isset($username)) {
   <link rel="stylesheet" href="../static/css/style.css">
   <link rel="stylesheet" href="../static/css/style_dp.css">
   <link rel="stylesheet" href="../static/css/user_log.css">
+  <link rel="stylesheet" href="../static/css/popup.css" />
 
   <title>Liste des Livres</title>
 </head>
@@ -64,31 +134,50 @@ if (!isset($username)) {
                 </div>
             </div>
 
+  <?php
+  $user_collection = rechercherLivres($sql, $params);
+  // $_count = count($user_collection);
+
+  if ($user_collection !== null) {
+    $display_main = true;
+    $display_error = false;
+  } else {
+    $display_main = false;
+    $display_error = true;
+  }
+
+  ?>
   <main id="content">
     <?php
-    $user_collection = getLivresUtilisateur($_SESSION['user_id']);
-    $_count = count($user_collection);
+    // $user_collection = getLivresUtilisateur($_SESSION['user_id']);
+    // $_count = count($user_collection);
     ?>
 
+
     <div class="section-filter">
-        <form class="filter-form" method="get">
+        <form class="filter-form" action="search.php" method="get">
             <label for="">Auteur</label>
-            <input type="text" class="form-control" name="auteur" placeholder="Auteur" value="<?php 
-            // echo htmlspecialchars($auteur); 
+            <input type="text" class="form-control" name="auteur" placeholder="<?php echo empty($_GET["auteur"]) ? "Auteur" : $_GET["auteur"] ?>" value="<?php 
+            // echo htmlspecialchars($params["auteur"]); 
             ?>">
             <label for="">Genre</label>
-            <input type="text" class="form-control" name="genre" placeholder="Genre" value="<?php 
+            <input type="text" class="form-control" name="genre" placeholder="<?php echo empty($_GET["genre"]) ? "Genre" : $_GET["genre"] ?>" value="<?php 
             // echo htmlspecialchars($genre); 
             ?>">
             <label for="">Annee</label>
             <div class="year-input">
-                    <input type="number" class="form-control" name="annee_min" placeholder="Année min" value="<?php 
+                    <input type="number" class="form-control" name="annee_min" placeholder="<?php echo empty($_GET["annee_min"]) ? "Année min" : $_GET["annee_min"] ?>" value="<?php 
                     // echo htmlspecialchars($annee_min); 
                     ?>">
-                    <input type="number" class="form-control" name="annee_max" placeholder="Année max" value="<?php 
+                    <input type="number" class="form-control" name="annee_max" placeholder="<?php echo empty($_GET["annee_max"]) ? "Année max" : $_GET["annee_max"] ?>" value="<?php 
                     // echo htmlspecialchars($annee_max); 
                     ?>">
             </div>
+
+            <label for="">Statut</label>
+            <input type="text" class="form-control" name="status" placeholder="<?php echo empty($_GET["status"]) ? "Statut" : $_GET["status"] ?>" value="<?php 
+            // echo htmlspecialchars($auteur); 
+            ?>">
             <div class="button">
                 <button type="submit" class="btn btn-primary">Appliquer</button>
                 <button type="reset" class="btn btn-secondary">Réinitialiser</button>
@@ -98,15 +187,21 @@ if (!isset($username)) {
 
     <div class="section-result">
         <div class="title-input">
-            <!-- <div class=""> -->
-                <input type="text" class="form-control" name="titre" placeholder="Titre" value="<?php 
+          <form action="search.php" method="get">
+
+            <input type="text" class="form-control" name="titre" placeholder="<?php echo empty($_GET["titre"]) ? "Titre" : $_GET["titre"] ?>" value="<?php 
                     // echo htmlspecialchars($titre); 
                 ?>">
-                <button type="submit" class="btn btn-primary">Rechercher</button>
-                <button type="reset" class="btn btn-secondary">Réinitialiser</button>
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+            <button type="reset" class="btn btn-secondary">Réinitialiser</button>
+          </form>
         </div>
-            
-        <table class="table table-hover text-center">
+        
+        <?php
+        if (!is_null($user_collection)) {
+        ?>        
+
+        <table class="table table-hover text-center mt-5">
             <thead class="table-dark">
                 <tr>
                 <th scope="col">Titre</th>
@@ -179,9 +274,9 @@ if (!isset($username)) {
               <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
                 <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $i])); ?>"><?php echo $i; ?> 1</a>
               </li>
-              <li class="page-item <?php echo $i == $page ? '' : ''; ?>">
+              <!-- <li class="page-item <?php echo $i == $page ? '' : ''; ?>">
                 <a class="page-link" href="?<?php echo http_build_query(array_merge($_GET, ['page' => $i])); ?>"><?php echo $i; ?> 2</a>
-              </li>
+              </li> -->
             <?php // endfor; ?>
     
             <?php // if ($page < $total_pages): ?>
@@ -193,6 +288,18 @@ if (!isset($username)) {
             <?php // endif; ?>
           </ul>
         </nav> 
+
+        <?php
+        } else {
+        ?> 
+          <div id="not-found_placeholder">
+            <img src="../static/image/empty.png" alt="">
+            <h2>Aucun livre trouvé !</h2>
+          </div>
+        
+        <?php
+        }
+        ?>
 
     </div>    
             

@@ -21,4 +21,4 @@ if (isset($_GET["action"]) && $_GET["action"] === "update") {
 }
 
 addLoan($user_id, $livre_id, $name, $date);
-header("Location: /pages/collection.php");
+header("Location: /pages/loans.php");

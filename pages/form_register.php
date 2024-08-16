@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page d'Inscription</title>
     <link rel="stylesheet" href="../static/css/forms.css"> <!-- Lien vers le fichier CSS -->
+    <link rel="stylesheet" href="../static/css/popup.css" />
 </head>
 <body>
     <div class="login_form">

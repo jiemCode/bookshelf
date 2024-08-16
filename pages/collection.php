@@ -21,6 +21,7 @@ if (!isset($username)) {
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="/static/css/style.css">
         <link rel="stylesheet" href="/static/css/user_log.css">
+        <link rel="stylesheet" href="../static/css/popup.css" />
     </head>
     <body>
 <!-- 
@@ -113,7 +114,7 @@ if (!isset($username)) {
             ?>
 
             <main id="">
-                <img src="../static/image/illustration.jpg" alt="bookshef-image">
+                <img src="../static/image/illustration.png" alt="bookshef-image">
                 <h1>Votre collection est vide 🙄. Commencer par <span>ajouter un livre</span></h1>
             </main>
                 
@@ -133,7 +134,7 @@ if (!isset($username)) {
                     <div class="item">
                         <div class="img-frame">
                             <img class="item-img" src="
-                            <?php echo isset($item['location']) ? $item['location'] : '../static/image/illustration.jpg';?>"
+                            <?php echo isset($item['location']) ? $item['location'] : '../static/image/illustration.png';?>"
                             alt="">
                         </div>
                         <div class="item-bottom">
@@ -159,6 +160,8 @@ if (!isset($username)) {
             ?>            
             
         </div>
+
+        <div id="successMessage" class="success-message"></div>
 
         <script src="/static/js/script.js" async defer></script>
     </body>

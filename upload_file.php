@@ -1,9 +1,5 @@
 <?php
-//
-// From https://www.w3schools.com/php/php_file_upload.asp
-//
 
-// require "services.php";
 require "services.php";
 
 session_start();
@@ -104,5 +100,5 @@ if ($action === "update") {
     header("Location: pages/collection.php");
 } else {
     addBook(titre: $title, author: $author, year: $year, genre: $genre, collection_id: $collection_id, filename: $filename);
-    header("Location: pages/collection.php");
+    header("Location: pages/collection.php?trigger=success&msg='".$title.'\' ajoute a la collection !');
 }

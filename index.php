@@ -7,6 +7,8 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="/static/css/style.css">
+        <link rel="stylesheet" href="/static/css/user_log.css">
+        <link rel="stylesheet" href="static/css/popup.css" />
     </head>
     <body>
 
@@ -14,6 +16,9 @@
         require 'services.php';
 
         session_start();
+
+
+        $username = $_SESSION["username"];
 
         ?>
 
@@ -32,7 +37,11 @@
                 <?php
                 if (isset($_SESSION["username"])) {
                 ?>
-                    <a href="logout.php"><button class="btn-register">Deconnexion</button></a>
+                    <!-- <a href="logout.php"><button class="btn-register">Deconnexion</button></a> -->
+                    <div class="user-container">
+                        <div class="username"><?php echo $username; ?></div>
+                        <a href="logout.php" class="logout-btn">Déconnexion</a>
+                    </div>
                 <?php
                 } else {
                 ?>
@@ -45,7 +54,7 @@
                 </div>
             </div>
 
-            <div id="header-block">
+            <!-- <div id="header-block"> -->
                 <div class="header" id="header">
                     <span id="logo">
                         <a href="#">BookShelf</a>
@@ -68,10 +77,10 @@
                         </a>
                     </div>
                 </div>
-            </div>
+            <!-- </div> -->
 
             <main>
-                <img src="static/image/illustration.jpg" alt="bookshef-image">
+                <img src="static/image/illustration.png" alt="bookshef-image">
                 <h1>Chaque livre a une histoire, collectionnez-les toutes sur <span>BookShelf</span></h1>
             </main>
             <div class="description">
@@ -91,7 +100,8 @@
         <footer>
             &copy 2024 - Tous droits réservés
         </footer>
-        
+
+                
         <script src="/static/js/script.js" async defer></script>
     </body>
 </html>

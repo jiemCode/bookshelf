@@ -5,12 +5,7 @@ require "services.php";
 
 function authentifier($login, $password) {
     if (!isValidUser($login)) {
-        echo "
-            <script>
-                alert('Vous n'etes pas autorise !');
-                window.location = '/pages/form_login.php'
-            </script>
-        ";
+        header('Location: pages/form_login.php?trigger=error&msg='.'Vous n\'etes pas autorise !');
         return ;
     }
 
@@ -20,21 +15,10 @@ function authentifier($login, $password) {
         $_SESSION['username'] = $login;
         $_SESSION['user_id'] = getUserId($login);
         $_SESSION['collection_id'] = getCollectionId($_SESSION['user_id']);
-        header('Location: pages/collection.php?username='.$login);
-        echo "
-            <script>
-                alert('Vous n'etes pas autorise !');
-                window.location = '/pages/form_login.php?username=$login'
-            </script>
-        ";
+        header('Location: pages/collection.php?username='.$login.'&trigger=success&msg='.'Bienvenue '.$login.' !');
         
     } else {
-        echo "
-            <script>
-                alert('Login ou mot de passe incorrects !');
-                window.location = '/pages/form_login.php?username=$login'
-            </script>
-        ";
+        header('Location: pages/form_login.php?trigger=error&msg='.'Login ou mot de passe incorrects !');
     }
 }
 

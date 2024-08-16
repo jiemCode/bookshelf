@@ -171,6 +171,11 @@ function insererPret($idUtilisateur, $idLivre, $nom) {
             UPDATE Livres SET status = 'Prêté' WHERE id = ?
         ");
         $stmt->execute([$idLivre]);
+
+        $stmt = $pdo->prepare("
+            UPDATE Prets SET date = CURRENT_DATE WHERE date IS NULL;
+        ");
+        $stmt->execute();
         
         $pdo->commit();
 
@@ -416,11 +421,15 @@ function supprimerPret($idPret, $idLivre) {
         
 
         $pdo->beginTransaction();
+
+        $stmt = $pdo->prepare("
+            UPDATE Livres SET status = ? WHERE id = ?
+        ");
+        $stmt->execute(["Disponible", $idLivre]);
         
         $stmt = $pdo->prepare("DELETE FROM Prets WHERE id = ?");
         $stmt->execute([$idPret]);
 
-        modifierStatutLivre($idLivre, "Disponible");
         
         $pdo->commit();
 
@@ -463,3 +472,32 @@ function supprimerUtilisateur($idUtilisateur) {
 }
 
 
+
+function rechercherLivres($sql, $params) {
+    try {
+        $pdo = opendatabase();
+
+        // Préparation et exécution de la requête
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+
+        // Récupération des résultats
+        $resultats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Affichage des résultats
+        if ($resultats) {
+            // foreach ($resultats as $livre) {
+            //     echo $livre['titre'] . " de " . $livre['auteur'] . " publié en " . $livre['annee'] . "<br>";
+            // }
+            return $resultats;
+        } else {
+            return null;
+        }
+        
+    } catch (PDOException $e) {
+        global $pdo;
+        $pdo->rollBack();
+        echo "Error: " . $e->getMessage();
+    }
+    return null;
+}
